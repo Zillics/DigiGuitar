@@ -1,3 +1,4 @@
+//Useful tools for testing and prototyping digital guitar
 #include "testTools.h"
 
 //waitForButton : waits for that something is sent on the Serial channel and then terminates
@@ -6,7 +7,40 @@ void waitForButton() {
   while (Serial.available() == 0) {}
 }
 
-void printAll(){
+void printVars(){
+	Serial.println("------------ALL VALUES STORED IN VOLATILE MEMORY------------");
+	Serial.println("******Pins******");
+	for(int i = 0; i < 8; i++){
+		Serial.print("Pin");
+		Serial.print(i+1);
+		Serial.print(": ");
+		Serial.println(pin[i]);
+	}
+	Serial.println("******Min values******");
+		for(int i = 0; i < 8; i++){
+		Serial.print("Pin");
+		Serial.print(i+1);
+		Serial.print(": ");
+		Serial.println(mini[i]);
+	}
+	Serial.println("******Max values******");
+		for(int i = 0; i < 8; i++){
+		Serial.print("Pin");
+		Serial.print(i+1);
+		Serial.print(": ");
+		Serial.println(maxi[i]);
+	}
+	Serial.println("******Baseline capacitance values******");
+		for(int i = 0; i < 8; i++){
+		Serial.print("Pin");
+		Serial.print(i+1);
+		Serial.print(": ");
+		Serial.println(baseC[i]);
+	}
+
+}
+
+void printEEPROM(){
 	Serial.println("------------ALL VALUES STORED IN EEPROM------------");
 	Serial.println("******Pins******");
 	for(int i = 0; i < 8; i++){
@@ -38,6 +72,7 @@ void printAll(){
 	}
 
 }
+
 
 unsigned long timeF(double (*f) (int,int,int),int a, int b, int c, int samples){
 	unsigned long t;

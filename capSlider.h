@@ -13,7 +13,10 @@ namespace addr {
 }
 //GLOBAL VARIABLES - stored in volatile memory. Use these primarily (faster)
 //ToDo: Define all needed variables and implement the updating of these variables during power on from eeprom
-
+extern int pin[8];
+extern int mini[8];
+extern int maxi[8];
+extern int baseC[8];
 //getMax : Gets max value from touchPad over time t
 int getMax(int pad, int t);
 
