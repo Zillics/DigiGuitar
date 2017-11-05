@@ -4,12 +4,15 @@
 #include "Arduino.h"
 #include <EEPROM.h>
 
+//EEPROM ADDRESSES
 namespace addr {
 	extern int pins[8]; //touchRead pins (8 bit)
 	extern int mins[8]; //min cap values for touch detection of each pin (16 bit)
 	extern int maxs[8]; //max cap values  of each pin (16 bit)
 	extern int baseLineC[8]; //baseline capacitance for each pin (16 bit)
 }
+//GLOBAL VARIABLES - stored in volatile memory. Use these primarily (faster)
+//ToDo: Define all needed variables and implement the updating of these variables during power on from eeprom
 
 //getMax : Gets max value from touchPad over time t
 int getMax(int pad, int t);
