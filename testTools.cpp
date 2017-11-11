@@ -10,28 +10,28 @@ void waitForButton() {
 void printVars(){
 	Serial.println("------------ALL VALUES STORED IN VOLATILE MEMORY------------");
 	Serial.println("******Pins******");
-	for(int i = 0; i < 8; i++){
+	for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");
 		Serial.println(pin[i]);
 	}
 	Serial.println("******Min values******");
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");
 		Serial.println(mini[i]);
 	}
 	Serial.println("******Max values******");
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");
 		Serial.println(maxi[i]);
 	}
 	Serial.println("******Baseline capacitance values******");
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");
@@ -43,28 +43,28 @@ void printVars(){
 void printEEPROM(){
 	Serial.println("------------ALL VALUES STORED IN EEPROM------------");
 	Serial.println("******Pins******");
-	for(int i = 0; i < 8; i++){
+	for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");
 		Serial.println(EEPROM.read(addr::pins[i]));
 	}
 	Serial.println("******Min values******");
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");
 		Serial.println((EEPROM.read(addr::mins[i]) << 8) | (EEPROM.read(addr::mins[i]+1)));
 	}
 	Serial.println("******Max values******");
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");
 		Serial.println((EEPROM.read(addr::maxs[i]) << 8) | (EEPROM.read(addr::maxs[i]+1)));
 	}
 	Serial.println("******Baseline capacitance values******");
-		for(int i = 0; i < 8; i++){
+		for(int i = 0; i < 11; i++){
 		Serial.print("Pin");
 		Serial.print(i+1);
 		Serial.print(": ");

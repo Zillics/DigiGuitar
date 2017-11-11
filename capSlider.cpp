@@ -3,12 +3,12 @@
 //EEPROM ADDRESSES
 //For 16 bit addresses: first byte: MSB, second byte: LSB
 
-int addr::pins[8] = {1,2,3,4,5,6,7,8}; //touchRead pins (8 bit)
-int addr::mins[8] = {12,14,16,18,20,22,24,26}; //min cap values for touch detection of each pin (16 bit)
-int addr::maxs[8] = {32,34,36,38,40,42,44,46}; //max cap values  of each pin (16 bit)
-int addr::baseLineC[8] = {42,44,46,48,50,52,54,56}; //baseline capacitance for each pin (16 bit)	
+int addr::pins[11] = {1,2,3,4,5,6,7,8,9,10,11}; //touchRead pins (8 bit)
+int addr::mins[11] = {12,14,16,18,20,22,24,26,28,30,32}; //min cap values for touch detection of each pin (16 bit)
+int addr::maxs[11] = {34,36,38,40,42,44,46,48,50,52,54}; //max cap values  of each pin (16 bit)
+int addr::baseLineC[11] = {56,58,60,62,64,68,70,72,74,78,80}; //baseline capacitance for each pin (16 bit)	
 
-#define THRESH 50
+#define THRESH 100
 //MACROS FOR READING EEPROM
 #define COMB(msb,lsb) (msb << 8) | lsb
 #define MINS(i) COMB(EEPROM.read(addr::mins[i]),EEPROM.read(addr::mins[i]+1)) 
@@ -19,10 +19,10 @@ int addr::baseLineC[8] = {42,44,46,48,50,52,54,56}; //baseline capacitance for e
 //GLOBAL VARIABLES
 //stored in volatile memory. Use these primarily (faster,unlimited writes).
 //Initialized by loading from eeprom during power on
-int pin[8] = {PINS(0),PINS(1),PINS(2),PINS(3),PINS(4),PINS(5),PINS(6),PINS(7)};
-int mini[8] = {MINS(0),MINS(1),MINS(2),MINS(3),MINS(4),MINS(5),MINS(6),MINS(7)};
-int maxi[8] = {MAXS(0), MAXS(1),MAXS(2),MAXS(3),MAXS(4),MAXS(5),MAXS(6),MAXS(7)};
-int baseC[8] = {BASEC(0),BASEC(1),BASEC(2),BASEC(3),BASEC(4),BASEC(5),BASEC(6),BASEC(7)};
+int pin[11] = {PINS(0),PINS(1),PINS(2),PINS(3),PINS(4),PINS(5),PINS(6),PINS(7),PINS(8),PINS(9),PINS(10)};
+int mini[11] = {MINS(0),MINS(1),MINS(2),MINS(3),MINS(4),MINS(5),MINS(6),MINS(7),MINS(8),MINS(9),MINS(10)};
+int maxi[11] = {MAXS(0), MAXS(1),MAXS(2),MAXS(3),MAXS(4),MAXS(5),MAXS(6),MAXS(7),MAXS(8),MAXS(9),MAXS(10)};
+int baseC[11] = {BASEC(0),BASEC(1),BASEC(2),BASEC(3),BASEC(4),BASEC(5),BASEC(6),BASEC(7),BASEC(8),BASEC(9),BASEC(10)};
 
 //getMax : Gets max value from touchPad over time t (ms)
 int getMax(int pad, int t){
@@ -45,7 +45,7 @@ void calBaseLineC(int t){
 	int v;
 	byte msb;
 	byte lsb;
-	for(int i = 0; i < 8; i++){
+	for(int i = 0; i < 11; i++){
 		v = getMax(i,t);
 		msb = v >> 8;
 		lsb = v;
@@ -100,15 +100,25 @@ void calSlider(int pad1, int pad2){
   int count = 0;
   bool sampled1 = false;
   bool sampled2 = false;
-  Serial.println("CALIBRATING MIN.....");
+  Serial.print("SLIDER ");
+  Serial.print(pad1/2 + 1);
+  Serial.println(": CALIBRATING MIN.....");
   while(!sampled1){
-    while((touchRead(pin1) > baseC1) || (touchRead(pin2) > baseC2)){
-      sum1 += touchRead(pin1);
-      sum2 += touchRead(pin2);
+	mean1 = touchRead(pin1);
+	mean2 = touchRead(pin2);
+    while((mean1 > baseC1) || (mean2 > baseC2)){
+	  sum1 += mean1;
+      sum2 += mean2;
       count += 1;
       sampled1 = true;
+	  mean1 = touchRead(pin1);
+      mean2 = touchRead(pin2);
+	  delay(200);
     }
+
   }
+  Serial.print("FOUND IT! (min), SAMPLES: ");
+  Serial.println(count);
   mean1 = sum1/count;
   mean2 = sum2/count;
   if(mean1 > mean2){
@@ -129,13 +139,21 @@ void calSlider(int pad1, int pad2){
   sum1 = 0;
   sum2 = 0;
   count = 0;
-  Serial.println("CALIBRATING MAX.....");
+  delay(2000);
+  Serial.print("SLIDER ");
+  Serial.print(pad1/2 + 1);
+  Serial.println(": CALIBRATING MAX.....");
   while(!sampled2){
-      while((touchRead(pin1) > baseC1) || (touchRead(pin2) > baseC2)){
-      sum1 += touchRead(pin1);
-      sum2 += touchRead(pin2);
+	  mean1 = touchRead(pin1);
+	  mean2 = touchRead(pin2);
+      while((mean1 > baseC1) || (mean2 > baseC2)){
+      sum1 += mean1;
+      sum2 += mean2;
       count += 1;
       sampled2 = true;
+	  mean1 = touchRead(pin1);
+	  mean2 = touchRead(pin2);
+	  delay(200);
     }
   }
   mean1 = sum1/count;
@@ -155,12 +173,13 @@ void calSlider(int pad1, int pad2){
 	maxi[pad2] = mean2;
 	mini[pad1] = mean1;
   }
+  Serial.println("CALIBRATED! ");
 }
 
 //updatePins : writes pin numbers to eeprom memory and global variables
-//LATEST UPDATE (4.11): {30, 29, 15, 16, 17, 18, 19, 22}
-void updatePins(byte b[8]){
-	for(int i = 0;i < 8;i++){
+//LATEST UPDATE (5.11): {30, 29, 23, 22, 17, 18, 19, 22}
+void updatePins(byte b[11]){
+	for(int i = 0;i < 11;i++){
 		EEPROM.write(addr::pins[i],b[i]);
 		pin[i] = b[i];
 	}

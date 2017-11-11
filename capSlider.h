@@ -1,22 +1,22 @@
-#ifndef ADD_H
-#define ADD_H
+#ifndef ADD_capH
+#define ADD_capH
 
 #include "Arduino.h"
 #include <EEPROM.h>
 
 //EEPROM ADDRESSES
 namespace addr {
-	extern int pins[8]; //touchRead pins (8 bit)
-	extern int mins[8]; //min cap values for touch detection of each pin (16 bit)
-	extern int maxs[8]; //max cap values  of each pin (16 bit)
-	extern int baseLineC[8]; //baseline capacitance for each pin (16 bit)
+	extern int pins[11]; //touchRead pins (8 bit)
+	extern int mins[11]; //min cap values for touch detection of each pin (16 bit)
+	extern int maxs[11]; //max cap values  of each pin (16 bit)
+	extern int baseLineC[11]; //baseline capacitance for each pin (16 bit)
 }
 //GLOBAL VARIABLES - stored in volatile memory. Use these primarily (faster)
 //ToDo: Define all needed variables and implement the updating of these variables during power on from eeprom
-extern int pin[8];
-extern int mini[8];
-extern int maxi[8];
-extern int baseC[8];
+extern int pin[11];
+extern int mini[11];
+extern int maxi[11];
+extern int baseC[11];
 //getMax : Gets max value from touchPad over time t
 int getMax(int pad, int t);
 
@@ -45,7 +45,7 @@ double readSlider1(int pad1, int pad2);
 //calSlider : Finds the average values for both pads, on both edges (max and min) of the slider
 void calSlider(int pad1, int pad2);
 
-void updatePins(byte b[8]);
+void updatePins(byte b[11]);
 
 void init();
 
