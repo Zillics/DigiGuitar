@@ -30,6 +30,7 @@ void midiSlider::print(){
 	Serial.print("Range: 0 -> ");
 	Serial.println(r);
 }
+
 //midiInstrument
 midiInstrument::midiInstrument(vector<midiSlider> s){
 	for(midiSlider i : s){
@@ -55,4 +56,24 @@ void midiInstrument::printAllRead(){
 		Serial.print(", ");
 	}
 	Serial.println();
+}
+
+void midiInstrument::StartString(int act,int sens){
+	int pitch;
+	//Serial.println("STARTED!");
+	while(true){
+		if(sliders[act].read() > 0){
+				//MIDI.sendNoteOn(100,100,1);
+				//Serial.println("NOTE ON");
+				while(sliders[act].read() > 0){
+					pitch = sliders[sens].read();
+					if(pitch > 0){
+						//MIDI.sendPitchBend(pitch,1);
+						//Serial.println(pitch);
+					}
+				}
+				//Serial.println("NOTE OFF");
+				//MIDI.sendNoteOff(100,100,1);
+		}
+	}
 }
